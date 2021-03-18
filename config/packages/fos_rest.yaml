@@ -1,0 +1,23 @@
+fos_rest:
+  body_converter:
+    enabled: true
+    validate: true
+    validation_errors_argument: violations
+  view:
+    formats: { json: true, xml: false, rss: false }
+    view_response_listener: true
+    mime_types:
+      json: [ 'application/json', 'application/json;version=1.0', 'application/json;version=2.0' ]
+  serializer:
+    serialize_null: true
+  format_listener:
+    rules:
+      - { path: '^/', priorities: ['json'], fallback_format: 'json' }
+  param_fetcher_listener: force
+  exception:
+    enabled: true
+    serializer_error_renderer: true
+    map_exception_codes: true
+    codes:
+      'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': HTTP_NOT_FOUND
+      'Exception': HTTP_INTERNAL_SERVER_ERROR
