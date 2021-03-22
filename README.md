@@ -1,5 +1,7 @@
 # BileMo
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/c8a8c98216e32f2bb1c8/maintainability)](https://codeclimate.com/github/Eredost/BileMo/maintainability)
+
 Seventh project of the OpenClassrooms PHP application developer path
 
 This project consists of setting up an API in order to provide all platforms that wish it with access to the BileMo product catalog.
