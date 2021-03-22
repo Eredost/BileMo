@@ -13,3 +13,13 @@ engines:
     checks:
       Naming/ShortVariable:
         enabled: false
+
+  exclude_patterns:
+    - "**/node_modules/"
+    - "**/test"
+    - "**/tests"
+    - "tests/"
+    - "**/vendor/"
+    - "migrations/"
+    - "diagrams/"
+    - "var/"
