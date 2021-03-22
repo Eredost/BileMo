@@ -1,0 +1,15 @@
+engines:
+  phpcodesniffer:
+    enabled: true
+
+  markdownlint:
+    enabled: true
+    checks:
+      MD029:
+        enabled: false
+
+  phpmd:
+    enabled: true
+    checks:
+      Naming/ShortVariable:
+        enabled: false
