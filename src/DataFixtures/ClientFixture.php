@@ -3,7 +3,6 @@
 
 namespace App\DataFixtures;
 
-
 use App\Entity\Client;
 use Doctrine\Persistence\ObjectManager;
 

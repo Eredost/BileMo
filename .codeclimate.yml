@@ -1,6 +1,9 @@
 plugins:
   phpcodesniffer:
     enabled: true
+    checks:
+      Generic Files LineLength TooLong:
+        enabled: false
 
   markdownlint:
     enabled: true

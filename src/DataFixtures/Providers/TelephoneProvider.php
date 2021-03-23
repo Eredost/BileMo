@@ -3,7 +3,6 @@
 
 namespace App\DataFixtures\Providers;
 
-
 class TelephoneProvider
 {
     /**

@@ -3,7 +3,6 @@
 
 namespace App\DataFixtures;
 
-
 use App\Entity\Telephone;
 use Doctrine\Persistence\ObjectManager;
 
