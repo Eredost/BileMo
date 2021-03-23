@@ -3,6 +3,7 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\Providers\ClientProvider;
 use App\DataFixtures\Providers\TelephoneProvider;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -31,6 +32,7 @@ abstract class AbstractFixture extends Fixture
         $this->manager = $manager;
         $this->faker   = Factory::create('fr_FR');
         $this->faker->addProvider(new TelephoneProvider());
+        $this->faker->addProvider(new ClientProvider());
 
         $this->loadData($manager);
     }
