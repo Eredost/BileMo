@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\TimestampableTrait;
 use App\Repository\ClientRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,21 +21,22 @@ class Client
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=80)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="client", orphanRemoval=true)
      */
-    private $users;
+    private Collection $users;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+        $this->users     = new ArrayCollection();
+        $this->createdAt = new DateTime();
     }
 
     public function getId(): ?int
@@ -74,11 +76,10 @@ class Client
 
     public function removeUser(User $user): self
     {
-        if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getClient() === $this) {
-                $user->setClient(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->users->removeElement($user)
+            && $user->getClient() === $this) {
+            $user->setClient(null);
         }
 
         return $this;

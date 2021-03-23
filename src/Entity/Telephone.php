@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\TimestampableTrait;
 use App\Repository\TelephoneRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,36 +19,36 @@ class Telephone
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=80)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="string", length=30)
      */
-    private $reference;
+    private string $reference;
 
     /**
      * @ORM\Column(type="string", length=80)
      */
-    private $brand;
+    private string $brand;
 
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $price;
+    private ?float $price;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $description;
+    private ?string $description;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new DateTime();
     }
 
     public function getId(): ?int
