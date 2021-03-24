@@ -6,9 +6,12 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Repository\TelephoneRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass=TelephoneRepository::class)
+ *
+ * @Serializer\ExclusionPolicy("all")
  */
 class Telephone
 {
@@ -18,31 +21,43 @@ class Telephone
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\Expose()
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=80)
+     *
+     * @Serializer\Expose()
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=30)
+     *
+     * @Serializer\Expose()
      */
     private string $reference;
 
     /**
      * @ORM\Column(type="string", length=80)
+     *
+     * @Serializer\Expose()
      */
     private string $brand;
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     *
+     * @Serializer\Expose()
      */
     private ?float $price;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     *
+     * @Serializer\Expose()
      */
     private ?string $description;
 

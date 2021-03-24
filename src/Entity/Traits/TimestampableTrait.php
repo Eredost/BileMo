@@ -3,32 +3,35 @@
 
 namespace App\Entity\Traits;
 
+use DateTimeInterface;
+use Doctrine\ORM\Mapping as ORM;
+
 trait TimestampableTrait
 {
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $updatedAt;
+    private ?DateTimeInterface $updatedAt;
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
     /**
-     * @param \DateTimeInterface $createdAt
+     * @param DateTimeInterface $createdAt
      *
      * @return $this
      */
-    public function setCreatedAt(\DateTimeInterface $createdAt):  self
+    public function setCreatedAt(DateTimeInterface $createdAt):  self
     {
         $this->createdAt = $createdAt;
 
@@ -36,19 +39,19 @@ trait TimestampableTrait
     }
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
     /**
-     * @param \DateTimeInterface|null $updatedAt
+     * @param DateTimeInterface|null $updatedAt
      *
      * @return $this
      */
-    public function setUpdatedAt($updatedAt): self
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
