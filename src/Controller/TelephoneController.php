@@ -7,28 +7,65 @@ use App\Entity\Telephone;
 use App\Repository\TelephoneRepository;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TelephoneController extends AbstractFOSRestController
 {
     /**
-     * @Rest\Get("/telephones",
-     *     name = "app_telephone_list")
+     * @Rest\Get(
+     *     path = "/telephones",
+     *     name = "app_telephone_list"
+     * )
+     * @Rest\QueryParam(
+     *     name = "keyword",
+     *     requirements = "[a-zA-Z0-9]",
+     *     nullable = true,
+     *     description = "The keyword to search for"
+     * )
+     * @Rest\QueryParam(
+     *     name = "order",
+     *     requirements = "asc|desc",
+     *     default = "asc",
+     *     description = "Sort order by phone name (asc or desc)"
+     * )
+     * @Rest\QueryParam(
+     *     name = "limit",
+     *     requirements = "\d+",
+     *     default = "10",
+     *     description = "Max number of phones per page"
+     * )
+     * @Rest\QueryParam(
+     *     name = "offset",
+     *     requirements = "\d+",
+     *     default = "0",
+     *     description = "The pagination offset"
+     * )
      * @Rest\View()
      *
      * @param TelephoneRepository $telephoneRepository
+     * @param ParamFetcherInterface $paramFetcher
      *
-     * @return array
+     * @return iterable
      */
-    public function list(TelephoneRepository $telephoneRepository):array
+    public function list(TelephoneRepository $telephoneRepository, ParamFetcherInterface $paramFetcher): iterable
     {
-        return $telephoneRepository->findAll();
+        $pager = $telephoneRepository->search(
+            $paramFetcher->get('keyword'),
+            $paramFetcher->get('order'),
+            $paramFetcher->get('limit'),
+            $paramFetcher->get('offset')
+        );
+
+        return $pager->getCurrentPageResults();
     }
 
     /**
-     * @Rest\Get("/telephones/{id}",
+     * @Rest\Get(
+     *     path = "/telephones/{id}",
      *     name = "app_telephone_show",
-     *     requirements = {"id": "\d+"})
+     *     requirements = {"id": "\d+"}
+     * )
      * @Rest\View()
      *
      * @param Telephone|null $telephone
