@@ -7,7 +7,7 @@ fos_rest:
     formats: { json: true }
     view_response_listener: true
     mime_types:
-      json: [ 'application/json', 'application/json;version=1.0', 'application/json;version=2.0' ]
+      json: [ 'application/json' ]
   serializer:
     serialize_null: true
   format_listener:

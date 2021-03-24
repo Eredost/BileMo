@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Telephone;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Pagerfanta\Pagerfanta;
 
 /**
  * @method Telephone|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,39 +12,26 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Telephone[]    findAll()
  * @method Telephone[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TelephoneRepository extends ServiceEntityRepository
+class TelephoneRepository extends AbstractRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Telephone::class);
     }
 
-    // /**
-    //  * @return Telephone[] Returns an array of Telephone objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function search($term, $order = 'asc', $limit = 10, $offset = 10):Pagerfanta
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
+        $qb = $this->createQueryBuilder('t')
+            ->select('t')
+            ->orderBy('t.name', $order)
         ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Telephone
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ($term) {
+            $qb->andWhere('a.name LIKE ?1')
+                ->setParameter(1, '%' . $term . '%')
+            ;
+        }
+
+        return $this->paginate($qb, $limit, $offset);
     }
-    */
 }
