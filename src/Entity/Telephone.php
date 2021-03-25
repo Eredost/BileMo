@@ -11,8 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TelephoneRepository::class)
- *
- * @Serializer\ExclusionPolicy("all")
  */
 class Telephone
 {
@@ -23,7 +21,7 @@ class Telephone
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"read"})
      */
     private int $id;
 
@@ -38,7 +36,7 @@ class Telephone
      *     maxMessage = "The name cannot exceed {{ limit }} characters"
      * )
      *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"read"})
      */
     private string $name;
 
@@ -53,7 +51,7 @@ class Telephone
      *     maxMessage = "The reference cannot exceed {{ limit }} characters"
      * )
      *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"read"})
      */
     private string $reference;
 
@@ -68,7 +66,7 @@ class Telephone
      *     maxMessage = "The brand name cannot exceed {{ limit }} characters"
      * )
      *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"read"})
      */
     private string $brand;
 
@@ -83,7 +81,7 @@ class Telephone
      *     message = "The price should be positive and greater than 0"
      * )
      *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"read"})
      */
     private ?float $price;
 
@@ -95,7 +93,7 @@ class Telephone
      *     maxMessage = "The description cannot exceed {{ limit }} characters"
      * )
      *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"read"})
      */
     private ?string $description;
 
