@@ -19,9 +19,9 @@ class TelephoneController extends AbstractFOSRestController
      * )
      * @Rest\QueryParam(
      *     name = "keyword",
-     *     requirements = "[a-zA-Z0-9]",
+     *     requirements = "\w+",
      *     nullable = true,
-     *     description = "The keyword to search for"
+     *     description = "The name of the phone to be searched"
      * )
      * @Rest\QueryParam(
      *     name = "order",
