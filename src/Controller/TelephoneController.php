@@ -14,6 +14,29 @@ class TelephoneController extends AbstractFOSRestController
 {
     /**
      * @Rest\Get(
+     *     path = "/telephones/{id}",
+     *     name = "app_telephone_show",
+     *     requirements = {"id": "\d+"}
+     * )
+     * @Rest\View(
+     *     serializerGroups = {"read"}
+     * )
+     *
+     * @param Telephone|null $telephone
+     *
+     * @return Telephone
+     */
+    public function show(Telephone $telephone = null): Telephone
+    {
+        if (!$telephone) {
+            throw new NotFoundHttpException('The telephone you searched for does not exist');
+        }
+
+        return $telephone;
+    }
+
+    /**
+     * @Rest\Get(
      *     path = "/telephones",
      *     name = "app_telephone_list"
      * )
@@ -41,7 +64,9 @@ class TelephoneController extends AbstractFOSRestController
      *     default = "0",
      *     description = "The pagination offset"
      * )
-     * @Rest\View()
+     * @Rest\View(
+     *     serializerGroups = {"read"}
+     * )
      *
      * @param TelephoneRepository $telephoneRepository
      * @param ParamFetcherInterface $paramFetcher
@@ -58,26 +83,5 @@ class TelephoneController extends AbstractFOSRestController
         );
 
         return $pager->getCurrentPageResults();
-    }
-
-    /**
-     * @Rest\Get(
-     *     path = "/telephones/{id}",
-     *     name = "app_telephone_show",
-     *     requirements = {"id": "\d+"}
-     * )
-     * @Rest\View()
-     *
-     * @param Telephone|null $telephone
-     *
-     * @return Telephone
-     */
-    public function show(Telephone $telephone = null): Telephone
-    {
-        if (!$telephone) {
-            throw new NotFoundHttpException('The telephone you searched for does not exist');
-        }
-
-        return $telephone;
     }
 }

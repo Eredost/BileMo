@@ -5,18 +5,23 @@ namespace App\Entity\Traits;
 
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 trait TimestampableTrait
 {
     /**
      * @ORM\Column(type="datetime")
+     *
+     * @Serializer\Groups({"read"})
      */
     private DateTimeInterface $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     *
+     * @Serializer\Groups({"read"})
      */
-    private ?DateTimeInterface $updatedAt;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
      * @return DateTimeInterface|null

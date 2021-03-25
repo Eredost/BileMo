@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\TimestampableTrait;
 use App\Repository\UserRepository;
+use App\Validator\UniqueEmail;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
@@ -13,8 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
- *
- * @Serializer\ExclusionPolicy("all")
  */
 class User implements UserInterface
 {
@@ -30,12 +29,7 @@ class User implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      *
-     * @Assert\Blank(
-     *     groups = {"create"},
-     *     message = "User id must not be defined"
-     * )
-     *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"read"})
      */
     private int $id;
 
@@ -50,14 +44,21 @@ class User implements UserInterface
      *     groups = {"create"},
      *     message = "The email '{{ value }}' is not a valid email address"
      * )
+     * @UniqueEmail(
+     *     groups = {"create"}
+     * )
      *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"create", "read"})
      */
     private string $email;
 
     /**
      * @ORM\Column(type="json")
      *
+     * @Assert\Type(
+     *     type = "array",
+     *     message = "The roles sould be a valid array"
+     * )
      * @Assert\All(
      *     @Assert\Choice(
      *         groups = {"create"},
@@ -66,26 +67,27 @@ class User implements UserInterface
      *     )
      * )
      *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"create", "read"})
+     * @Serializer\Type("array")
      */
     private array $roles = [];
 
     /**
      * @ORM\Column(type="string")
-     */
-    private string $password;
-
-    /**
+     *
      * @Assert\NotBlank(
      *     groups = {"create"},
      *     message = "The password cannot be blank"
      * )
      * @Assert\Regex(
+     *     groups = {"create"},
      *     pattern = "/(?=^.{8,40}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/",
      *     message = "Your password must contain at least 8 characters and a maximum of 40 characters including one lower case, one upper case and one number"
      * )
+     *
+     * @Serializer\Groups({"create"})
      */
-    private ?string $plainPassword = null;
+    private string $password;
 
     /**
      * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="users")
@@ -105,13 +107,14 @@ class User implements UserInterface
      *     maxMessage = "The fullname cannot exceed {{ limit }} characters"
      * )
      *
-     * @Serializer\Expose()
+     * @Serializer\Groups({"create", "read"})
      */
     private string $fullname;
 
     public function __construct()
     {
         $this->createdAt = new DateTime();
+        $this->plainPassword = null;
     }
 
     public function getId(): ?int
@@ -171,18 +174,6 @@ class User implements UserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    public function getPlainPassword(): ?string
-    {
-        return $this->plainPassword;
-    }
-
-    public function setPlainPassword(string $plainPassword): self
-    {
-        $this->plainPassword = $plainPassword;
 
         return $this;
     }

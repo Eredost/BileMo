@@ -3,13 +3,69 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Exception\ResourceValidationException;
+use App\Repository\ClientRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class UserController extends AbstractFOSRestController
 {
+    /**
+     * @Rest\Get(
+     *     path = "/users/{id}",
+     *     name = "app_user_show",
+     *     requirements = {"id": "\d+"}
+     * )
+     * @Rest\View(
+     *     serializerGroups = {"read"}
+     * )
+     *
+     * @param User|null $user
+     *
+     * @return User
+     */
+    public function show(User $user = null): User
+    {
+        if (!$user) {
+            throw new NotFoundHttpException('The user you searched for does not exist');
+        }
+
+        return $user;
+    }
+
+    /**
+     * @Rest\Delete(
+     *     path = "/users/{id}",
+     *     name = "app_user_delete",
+     *     requirements = {"id": "\d+"}
+     * )
+     * @Rest\View(
+     *     statusCode = 204
+     * )
+     * @param EntityManagerInterface $manager
+     * @param User|null              $user
+     */
+    public function delete(EntityManagerInterface $manager, User $user = null): void
+    {
+        if (!$user) {
+            throw new NotFoundHttpException('The user you searched for does not exist');
+        }
+        $manager->remove($user);
+        $manager->flush();
+    }
+
     /**
      * @Rest\Get(
      *     path = "/users",
@@ -39,7 +95,9 @@ class UserController extends AbstractFOSRestController
      *     default = "0",
      *     description = "The pagination offset"
      * )
-     * @Rest\View()
+     * @Rest\View(
+     *     serializerGroups = {"read"}
+     * )
      *
      * @param UserRepository        $userRepository
      * @param ParamFetcherInterface $paramFetcher
@@ -56,5 +114,61 @@ class UserController extends AbstractFOSRestController
         );
 
         return $pager->getCurrentPageResults();
+    }
+
+    /**
+     * @Rest\Post(
+     *     path = "/users",
+     *     name = "app_user_create"
+     * )
+     * @Rest\View(
+     *     statusCode = 201,
+     *     serializerGroups = {"read"}
+     * )
+     * @ParamConverter(
+     *     "user",
+     *     converter = "fos_rest.request_body",
+     *     options = {
+     *         "validator" = {"groups" = "create"},
+     *         "deserializationContext" = {"groups" = {"create"}}
+     *     }
+     * )
+     *
+     * @param User                             $user
+     * @param EntityManagerInterface           $manager
+     * @param ConstraintViolationListInterface $violations
+     * @param ClientRepository                 $clientRepository
+     * @param UserPasswordEncoderInterface     $encoder
+     *
+     * @return View
+     * @throws ResourceValidationException
+     */
+    public function create(User $user, EntityManagerInterface $manager, ConstraintViolationListInterface $violations, ClientRepository $clientRepository, UserPasswordEncoderInterface $encoder): View
+    {
+        if (count($violations)) {
+            $message = 'The JSON sent contains invalid data: ';
+            foreach ($violations as $violation) {
+                /** @var ConstraintViolationInterface $violation */
+                $message .= sprintf(
+                    'Field %s: %s; ',
+                    $violation->getPropertyPath(),
+                    $violation->getMessage()
+                );
+            }
+
+            throw new ResourceValidationException($message);
+        }
+        $user->setClient($clientRepository->findOneBy([]));
+        $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+        $user->setCreatedAt(new \DateTime());
+
+        $manager->persist($user);
+        $manager->flush();
+
+        return $this->view(
+            $user,
+            Response::HTTP_CREATED,
+            ['location' => $this->generateUrl('app_user_show', ['id' => $user->getId()], UrlGeneratorInterface::ABSOLUTE_URL)]
+        );
     }
 }

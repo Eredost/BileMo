@@ -26,5 +26,10 @@ fos_rest:
     serializer_error_renderer: true
     map_exception_codes: true
     codes:
+      'App\Exception\ResourceValidationException': HTTP_BAD_REQUEST
       'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': HTTP_NOT_FOUND
+      'Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException': HTTP_METHOD_NOT_ALLOWED
+      'Symfony\Component\HttpKernel\Exception\BadRequestHttpException': HTTP_BAD_REQUEST
       'Exception': HTTP_INTERNAL_SERVER_ERROR
+    messages:
+      'Symfony\Component\HttpKernel\Exception\NotFoundHttpException': true
