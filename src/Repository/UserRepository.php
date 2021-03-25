@@ -40,7 +40,7 @@ class UserRepository extends AbstractRepository implements PasswordUpgraderInter
     {
         $qb = $this->createQueryBuilder('u')
             ->select('u')
-            ->orderBy('u.fullname')
+            ->orderBy('u.fullname', $order)
         ;
 
         if ($term) {
