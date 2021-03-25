@@ -6,11 +6,14 @@ use App\Entity\Traits\TimestampableTrait;
 use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
+ *
+ * @Serializer\ExclusionPolicy("all")
  */
 class User implements UserInterface
 {
@@ -20,16 +23,22 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @Serializer\Expose()
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     *
+     * @Serializer\Expose()
      */
     private string $email;
 
     /**
      * @ORM\Column(type="json")
+     *
+     * @Serializer\Expose()
      */
     private array $roles = [];
 
@@ -38,7 +47,7 @@ class User implements UserInterface
      */
     private string $password;
 
-    private ?string $plainPassword;
+    private ?string $plainPassword = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="users")
@@ -48,6 +57,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=80)
+     *
+     * @Serializer\Expose()
      */
     private string $fullname;
 

@@ -19,7 +19,7 @@ class TelephoneRepository extends AbstractRepository
         parent::__construct($registry, Telephone::class);
     }
 
-    public function search($term, $order = 'asc', $limit = 10, $offset = 10):Pagerfanta
+    public function search(?string $term, string $order = 'asc', int $limit = 10, int $offset = 10): Pagerfanta
     {
         $qb = $this->createQueryBuilder('t')
             ->select('t')
@@ -27,7 +27,7 @@ class TelephoneRepository extends AbstractRepository
         ;
 
         if ($term) {
-            $qb->andWhere('a.name LIKE ?1')
+            $qb->andWhere('t.name LIKE ?1')
                 ->setParameter(1, '%' . $term . '%')
             ;
         }
