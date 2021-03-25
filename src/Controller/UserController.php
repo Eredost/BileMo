@@ -134,16 +134,15 @@ class UserController extends AbstractFOSRestController
      *     }
      * )
      *
-     * @param User                             $user
-     * @param EntityManagerInterface           $manager
+     * @param User $user
      * @param ConstraintViolationListInterface $violations
-     * @param ClientRepository                 $clientRepository
-     * @param UserPasswordEncoderInterface     $encoder
+     * @param ClientRepository $clientRepository
+     * @param UserPasswordEncoderInterface $encoder
      *
      * @return View
      * @throws ResourceValidationException
      */
-    public function create(User $user, EntityManagerInterface $manager, ConstraintViolationListInterface $violations, ClientRepository $clientRepository, UserPasswordEncoderInterface $encoder): View
+    public function create(User $user, ConstraintViolationListInterface $violations, ClientRepository $clientRepository, UserPasswordEncoderInterface $encoder): View
     {
         if (count($violations)) {
             $message = 'The JSON sent contains invalid data: ';
@@ -162,6 +161,7 @@ class UserController extends AbstractFOSRestController
         $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
         $user->setCreatedAt(new \DateTime());
 
+        $manager = $this->getDoctrine()->getManager();
         $manager->persist($user);
         $manager->flush();
 
