@@ -7,6 +7,7 @@ use App\Repository\TelephoneRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TelephoneRepository::class)
@@ -29,12 +30,28 @@ class Telephone
     /**
      * @ORM\Column(type="string", length=80)
      *
+     * @Assert\NotBlank(
+     *     message = "The name cannot be blank"
+     * )
+     * @Assert\Length(
+     *     max = 80,
+     *     maxMessage = "The name cannot exceed {{ limit }} characters"
+     * )
+     *
      * @Serializer\Expose()
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=30)
+     *
+     * @Assert\NotBlank(
+     *     message = "The reference cannot be blank"
+     * )
+     * @Assert\Length(
+     *     max = 30,
+     *     maxMessage = "The reference cannot exceed {{ limit }} characters"
+     * )
      *
      * @Serializer\Expose()
      */
@@ -43,6 +60,14 @@ class Telephone
     /**
      * @ORM\Column(type="string", length=80)
      *
+     * @Assert\NotBlank(
+     *     message = "The brand name cannot be blank"
+     * )
+     * @Assert\Length(
+     *     max = 80,
+     *     maxMessage = "The brand name cannot exceed {{ limit }} characters"
+     * )
+     *
      * @Serializer\Expose()
      */
     private string $brand;
@@ -50,12 +75,25 @@ class Telephone
     /**
      * @ORM\Column(type="float", nullable=true)
      *
+     * @Assert\Type(
+     *     type = {"float", "int"},
+     *     message = "The price should be a valid number"
+     * )
+     * @Assert\Positive(
+     *     message = "The price should be positive and greater than 0"
+     * )
+     *
      * @Serializer\Expose()
      */
     private ?float $price;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     *
+     * @Assert\Length(
+     *     max = 1000,
+     *     maxMessage = "The description cannot exceed {{ limit }} characters"
+     * )
      *
      * @Serializer\Expose()
      */
