@@ -8,6 +8,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -17,12 +18,22 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+    public const ROLES = [
+        'ROLE_USER',
+        'ROLE_ADMIN'
+    ];
+
     use TimestampableTrait;
 
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @Assert\Blank(
+     *     groups = {"create"},
+     *     message = "User id must not be defined"
+     * )
      *
      * @Serializer\Expose()
      */
@@ -31,12 +42,29 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      *
+     * @Assert\NotBlank(
+     *     groups = {"create"},
+     *     message = "The email cannot be blank"
+     * )
+     * @Assert\Email(
+     *     groups = {"create"},
+     *     message = "The email '{{ value }}' is not a valid email address"
+     * )
+     *
      * @Serializer\Expose()
      */
     private string $email;
 
     /**
      * @ORM\Column(type="json")
+     *
+     * @Assert\All(
+     *     @Assert\Choice(
+     *         groups = {"create"},
+     *         choices = User::ROLES,
+     *         message = "You must provid a valid user role. Roles available: {{ choices }}"
+     *     )
+     * )
      *
      * @Serializer\Expose()
      */
@@ -47,6 +75,16 @@ class User implements UserInterface
      */
     private string $password;
 
+    /**
+     * @Assert\NotBlank(
+     *     groups = {"create"},
+     *     message = "The password cannot be blank"
+     * )
+     * @Assert\Regex(
+     *     pattern = "/(?=^.{8,40}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/",
+     *     message = "Your password must contain at least 8 characters and a maximum of 40 characters including one lower case, one upper case and one number"
+     * )
+     */
     private ?string $plainPassword = null;
 
     /**
@@ -57,6 +95,15 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=80)
+     *
+     * @Assert\NotBlank(
+     *     groups = {"create"},
+     *     message = "The user fullname cannot be blank"
+     * )
+     * @Assert\Length(
+     *     max = 80,
+     *     maxMessage = "The fullname cannot exceed {{ limit }} characters"
+     * )
      *
      * @Serializer\Expose()
      */

@@ -8,6 +8,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
@@ -25,6 +26,14 @@ class Client
 
     /**
      * @ORM\Column(type="string", length=80)
+     *
+     * @Assert\NotBlank(
+     *     message = "The name cannot be blank"
+     * )
+     * @Assert\Length(
+     *     max = 80,
+     *     maxMessage = "The name cannot exceed {{ limit }} characters"
+     * )
      */
     private string $name;
 
