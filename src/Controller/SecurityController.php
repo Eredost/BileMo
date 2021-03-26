@@ -19,7 +19,7 @@ class SecurityController extends AbstractController
      *     name = "app_login"
      * )
      */
-    public function login(): Response
+    public function login(): void
     {
         throw new LogicException('This method can be blank - it will be intercepted by the login key in the firewall');
     }

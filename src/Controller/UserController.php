@@ -13,6 +13,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,17 +37,22 @@ class UserController extends AbstractFOSRestController
      *     serializerGroups = {"read"}
      * )
      *
-     * @param User|null $user
+     * @Security(
+     *     "is_granted('MANAGE', consumer)",
+     *     message = "You are not authorized to access this user"
+     * )
+     *
+     * @param User|null $consumer
      *
      * @return User
      */
-    public function show(User $user = null): User
+    public function show(User $consumer = null): User
     {
-        if (!$user) {
+        if (!$consumer) {
             throw new NotFoundHttpException('The user you searched for does not exist');
         }
 
-        return $user;
+        return $consumer;
     }
 
     /**
@@ -58,15 +64,21 @@ class UserController extends AbstractFOSRestController
      * @Rest\View(
      *     statusCode = 204
      * )
+     *
+     * @Security(
+     *     "is_granted('ROLE_ADMIN') and is_granted('MANAGE', consumer)",
+     *     message = "You are not authorized to delete this user"
+     * )
+     *
      * @param EntityManagerInterface $manager
-     * @param User|null              $user
+     * @param User|null              $consumer
      */
-    public function delete(EntityManagerInterface $manager, User $user = null): void
+    public function delete(EntityManagerInterface $manager, User $consumer = null): void
     {
-        if (!$user) {
+        if (!$consumer) {
             throw new NotFoundHttpException('The user you searched for does not exist');
         }
-        $manager->remove($user);
+        $manager->remove($consumer);
         $manager->flush();
     }
 
@@ -111,6 +123,7 @@ class UserController extends AbstractFOSRestController
     public function list(UserRepository $userRepository, ParamFetcherInterface $paramFetcher): iterable
     {
         $pager = $userRepository->search(
+            $this->getUser()->getClient(),
             $paramFetcher->get('keyword'),
             $paramFetcher->get('order'),
             $paramFetcher->get('limit'),
@@ -129,6 +142,11 @@ class UserController extends AbstractFOSRestController
      *     statusCode = 201,
      *     serializerGroups = {"read"}
      * )
+     *
+     * @Security(
+     *     "is_granted('ROLE_ADMIN')",
+     *     message = "You are not authorized to create a new user"
+     * )
      * @ParamConverter(
      *     "user",
      *     converter = "fos_rest.request_body",
@@ -138,10 +156,10 @@ class UserController extends AbstractFOSRestController
      *     }
      * )
      *
-     * @param User $user
+     * @param User                             $user
      * @param ConstraintViolationListInterface $violations
-     * @param ClientRepository $clientRepository
-     * @param UserPasswordEncoderInterface $encoder
+     * @param ClientRepository                 $clientRepository
+     * @param UserPasswordEncoderInterface     $encoder
      *
      * @return View
      * @throws ResourceValidationException
@@ -161,7 +179,7 @@ class UserController extends AbstractFOSRestController
 
             throw new ResourceValidationException($message);
         }
-        $user->setClient($clientRepository->findOneBy([]));
+        $user->setClient($this->getUser()->getClient());
         $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
         $user->setCreatedAt(new \DateTime());
 

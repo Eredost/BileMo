@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Client;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Pagerfanta\Pagerfanta;
@@ -36,10 +37,12 @@ class UserRepository extends AbstractRepository implements PasswordUpgraderInter
         $this->_em->flush();
     }
 
-    public function search(?string $term, string $order, int $limit = 10, int $offset = 0): Pagerfanta
+    public function search(Client $client, ?string $term, string $order, int $limit = 10, int $offset = 0): Pagerfanta
     {
         $qb = $this->createQueryBuilder('u')
             ->select('u')
+            ->andWhere('u.client = :client')
+            ->setParameter('client', $client)
             ->orderBy('u.fullname', $order)
         ;
 
