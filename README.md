@@ -6,7 +6,7 @@ Seventh project of the OpenClassrooms PHP application developer path
 
 This project consists of setting up an API in order to provide all platforms
 that wish it with access to the BileMo product catalog.
-The application must be made in PHP using the Symfony framework.
+The API must be made in PHP using the Symfony framework and must follow the rules of Level 1, 2 and 3 of the Richardson Maturity Model.
 
 ## Installation
 
@@ -39,7 +39,13 @@ To set up the project, follow the steps below:
    php bin/console doctrine:fixtures:load
    ```
 
-6. Finally, you can launch the Symfony server with the following command:
+6. Henceforth, you need to generate the SSL keys for JWT authentication:
+
+   ```shell
+   php bin/console lexik:jwt:generate-keypair
+   ```
+
+7. Finally, you can launch the Symfony server with the following command:
 
    ```shell
    symfony serve
