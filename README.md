@@ -6,7 +6,8 @@ Seventh project of the OpenClassrooms PHP application developer path
 
 This project consists of setting up an API in order to provide all platforms
 that wish it with access to the BileMo product catalog.
-The API must be made in PHP using the Symfony framework and must follow the rules of Level 1, 2 and 3 of the Richardson Maturity Model.
+The API must be made in PHP using the Symfony framework and must
+follow the rules of Level 1, 2 and 3 of the Richardson Maturity Model.
 
 ## Installation
 
