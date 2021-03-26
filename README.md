@@ -11,7 +11,7 @@ The application must be made in PHP using the Symfony framework.
 ## Installation
 
 Before you can download the project you must first have a PHP version
-at least >=7.4, a recent version of Composer and the
+at least >=7.4 with openssl extension, a recent version of Composer and the
 [Symfony CLI](https://symfony.com/download).
 
 To set up the project, follow the steps below:
