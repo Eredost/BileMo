@@ -5,7 +5,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Exception\ResourceValidationException;
-use App\Repository\ClientRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -158,13 +157,12 @@ class UserController extends AbstractFOSRestController
      *
      * @param User                             $user
      * @param ConstraintViolationListInterface $violations
-     * @param ClientRepository                 $clientRepository
      * @param UserPasswordEncoderInterface     $encoder
      *
      * @return View
      * @throws ResourceValidationException
      */
-    public function create(User $user, ConstraintViolationListInterface $violations, ClientRepository $clientRepository, UserPasswordEncoderInterface $encoder): View
+    public function create(User $user, ConstraintViolationListInterface $violations, UserPasswordEncoderInterface $encoder): View
     {
         if (count($violations)) {
             $message = 'The JSON sent contains invalid data: ';
