@@ -19,6 +19,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         "app_telephone_show",
  *         parameters = { "id" = "expr(object.getId())" },
  *         absolute = true
+ *     ),
+ *     exclusion = @Hateoas\Exclusion(
+ *         groups = { "read" }
  *     )
  * )
  */

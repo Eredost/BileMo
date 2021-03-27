@@ -8,6 +8,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -34,6 +35,8 @@ class Client
      *     max = 80,
      *     maxMessage = "The name cannot exceed {{ limit }} characters"
      * )
+     *
+     * @Serializer\Groups({"read"})
      */
     private string $name;
 
