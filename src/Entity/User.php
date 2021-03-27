@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use App\Validator\UniqueEmail;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -14,6 +15,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
+ *
+ * @Hateoas\Relation(
+ *     "self",
+ *     href = @Hateoas\Route(
+ *         "app_user_show",
+ *         parameters = { "id" = "expr(object.getId())" }
+ *     )
+ * )
  */
 class User implements UserInterface
 {

@@ -23,7 +23,7 @@ class TelephoneController extends AbstractFOSRestController
      *     requirements = {"id": "\d+"}
      * )
      * @Rest\View(
-     *     serializerGroups = {"read"}
+     *     serializerGroups = {"read", "Default"}
      * )
      *
      * @param Telephone|null $telephone
