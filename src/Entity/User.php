@@ -20,7 +20,43 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "self",
  *     href = @Hateoas\Route(
  *         "app_user_show",
- *         parameters = { "id" = "expr(object.getId())" }
+ *         parameters = { "id" = "expr(object.getId())" },
+ *         absolute = true
+ *     ),
+ *     exclusion = @Hateoas\Exclusion(
+ *         groups = { "read" }
+ *     )
+ * )
+ * @Hateoas\Relation(
+ *     "create",
+ *     href = @Hateoas\Route(
+ *         "app_user_create",
+ *         absolute = true
+ *     ),
+ *     exclusion = @Hateoas\Exclusion(
+ *         groups = { "read" },
+ *         excludeIf = "expr(not is_granted('ROLE_ADMIN'))"
+ *     )
+ * )
+ * @Hateoas\Relation(
+ *     "delete",
+ *     href = @Hateoas\Route(
+ *         "app_user_delete",
+ *         parameters = { "id" = "expr(object.getId())" },
+ *         absolute = true
+ *     ),
+ *     exclusion = @Hateoas\Exclusion(
+ *         groups = { "read" },
+ *         excludeIf = "expr(not is_granted('ROLE_ADMIN'))"
+ *     )
+ * )
+ * @Hateoas\Relation(
+ *     "client",
+ *     embedded = @Hateoas\Embedded(
+ *         "expr(object.getClient())"
+ *     ),
+ *     exclusion = @Hateoas\Exclusion(
+ *         groups = { "read" }
  *     )
  * )
  */
@@ -101,6 +137,9 @@ class User implements UserInterface
     /**
      * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     *
+     * @Serializer\Exclude()
+     * @Serializer\Groups({"read"})
      */
     private Client $client;
 
