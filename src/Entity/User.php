@@ -135,7 +135,7 @@ class User implements UserInterface
     private string $password;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="users")
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="users", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      *
      * @Serializer\Exclude()
