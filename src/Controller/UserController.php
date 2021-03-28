@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * @Route("/api")
@@ -116,20 +117,18 @@ class UserController extends AbstractFOSRestController
      *
      * @param UserRepository        $userRepository
      * @param ParamFetcherInterface $paramFetcher
+     * @param CacheInterface        $appCache
      *
      * @return iterable
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function list(UserRepository $userRepository, ParamFetcherInterface $paramFetcher): iterable
+    public function list(UserRepository $userRepository, ParamFetcherInterface $paramFetcher, CacheInterface $appCache): iterable
     {
-        $pager = $userRepository->search(
-            $this->getUser()->getClient(),
-            $paramFetcher->get('keyword'),
-            $paramFetcher->get('order'),
-            $paramFetcher->get('limit'),
-            $paramFetcher->get('offset')
-        );
+        $client = $this->getUser()->getClient();
+        $params = array_values($paramFetcher->all());
+        $cacheKey = 'users_' . md5($client->getId() . implode('', $params));
 
-        return $pager->getCurrentPageResults();
+        return $appCache->get($cacheKey, fn () => $userRepository->search($client, ...$params)->getCurrentPageResults());
     }
 
     /**
