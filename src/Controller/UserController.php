@@ -128,7 +128,7 @@ class UserController extends AbstractFOSRestController
         $params = array_values($paramFetcher->all());
         $cacheKey = 'users_' . md5($client->getId() . implode('', $params));
 
-        return $appCache->get($cacheKey, fn () => $userRepository->search($client, ...$params)->getCurrentPageResults());
+        return $appCache->get($cacheKey, fn() => $userRepository->search($client, ...$params)->getCurrentPageResults());
     }
 
     /**

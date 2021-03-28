@@ -85,6 +85,6 @@ class TelephoneController extends AbstractFOSRestController
         $params = array_values($paramFetcher->all());
         $cacheKey = 'telephones_' . md5(implode('', $params));
 
-        return $appCache->get($cacheKey, fn () => $telephoneRepository->search(...$params)->getCurrentPageResults());
+        return $appCache->get($cacheKey, fn() => $telephoneRepository->search(...$params)->getCurrentPageResults());
     }
 }
