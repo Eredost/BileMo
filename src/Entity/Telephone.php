@@ -8,6 +8,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -35,6 +36,7 @@ class Telephone
      * @ORM\Column(type="integer")
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(description="The unique identifier of the telephone")
      */
     private int $id;
 
@@ -50,6 +52,7 @@ class Telephone
      * )
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(description="The phone name")
      */
     private string $name;
 
@@ -65,6 +68,7 @@ class Telephone
      * )
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(description="The phone reference")
      */
     private string $reference;
 
@@ -80,6 +84,7 @@ class Telephone
      * )
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(description="The brand name of the phone")
      */
     private string $brand;
 
@@ -95,6 +100,11 @@ class Telephone
      * )
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(
+     *     type = "number",
+     *     format = "float",
+     *     description = "The price of the phone in euro"
+     * )
      */
     private ?float $price;
 
@@ -107,6 +117,7 @@ class Telephone
      * )
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(description="The description of the phone ")
      */
     private ?string $description;
 
