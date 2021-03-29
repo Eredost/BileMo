@@ -6,6 +6,7 @@ namespace App\Entity\Traits;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use OpenApi\Annotations as OA;
 
 trait TimestampableTrait
 {
@@ -13,6 +14,11 @@ trait TimestampableTrait
      * @ORM\Column(type="datetime")
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(
+     *     type = "string",
+     *     format = "date-time",
+     *     description = "The creation date of the resource"
+     * )
      */
     private DateTimeInterface $createdAt;
 
@@ -20,6 +26,11 @@ trait TimestampableTrait
      * @ORM\Column(type="datetime", nullable=true)
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(
+     *     type = "string",
+     *     format = "date-time",
+     *     description = "The date of the last update of the resource"
+     * )
      */
     private ?DateTimeInterface $updatedAt = null;
 

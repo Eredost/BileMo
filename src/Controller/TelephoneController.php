@@ -8,6 +8,8 @@ use App\Repository\TelephoneRepository;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -25,6 +27,11 @@ class TelephoneController extends AbstractFOSRestController
      * )
      * @Rest\View(
      *     serializerGroups = {"read"}
+     * )
+     * @OA\Response(
+     *     response = 200,
+     *     description = "Returns the user according to his id",
+     *     @Model(type=Telephone::class, groups={"read"})
      * )
      *
      * @param Telephone|null $telephone

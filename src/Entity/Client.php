@@ -9,6 +9,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -22,6 +24,8 @@ class Client
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @OA\Property(description="The unique identifier of the client")
      */
     private int $id;
 
@@ -37,11 +41,16 @@ class Client
      * )
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(description="The client name")
      */
     private string $name;
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="client", orphanRemoval=true)
+     * @OA\Property(
+     *     ref = @Model(type=User::class),
+     *     description = "Users linked to the client"
+     * )
      */
     private Collection $users;
 

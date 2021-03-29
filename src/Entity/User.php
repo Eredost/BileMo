@@ -9,6 +9,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
+use OpenApi\Annotations as OA;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -75,6 +76,7 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      *
      * @Serializer\Groups({"read"})
+     * @OA\Property(description="The unique identifier of the user")
      */
     private int $id;
 
@@ -94,6 +96,7 @@ class User implements UserInterface
      * )
      *
      * @Serializer\Groups({"create", "read"})
+     * @OA\Property(description="The user email")
      */
     private string $email;
 
@@ -114,6 +117,7 @@ class User implements UserInterface
      *
      * @Serializer\Groups({"create", "read"})
      * @Serializer\Type("array")
+     * @OA\Property(description="The roles of the user giving permissions")
      */
     private array $roles = [];
 
@@ -131,6 +135,11 @@ class User implements UserInterface
      * )
      *
      * @Serializer\Groups({"create"})
+     * @OA\Property(
+     *     type = "string",
+     *     format = "password",
+     *     description = "The hash of the password"
+     * )
      */
     private string $password;
 
@@ -140,6 +149,10 @@ class User implements UserInterface
      *
      * @Serializer\Exclude()
      * @Serializer\Groups({"read"})
+     * @OA\Property(
+     *     ref = @Model(type=Client::class),
+     *     description = "Client linked to the user"
+     * )
      */
     private Client $client;
 
@@ -156,6 +169,7 @@ class User implements UserInterface
      * )
      *
      * @Serializer\Groups({"create", "read"})
+     * @OA\Property(description="The user's full name")
      */
     private string $fullname;
 
