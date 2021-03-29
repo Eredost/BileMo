@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *     response = 405,
  *     description = "Method not allowed"
  * )
+ * @OA\Tag(name="Authentication")
  */
 class SecurityController extends AbstractController
 {

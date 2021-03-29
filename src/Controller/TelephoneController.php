@@ -16,6 +16,16 @@ use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * @Route("/api")
+ *
+ * @OA\Response(
+ *     response = 405,
+ *     description = "Method not allowed"
+ * )
+ * @OA\Response(
+ *     response = 401,
+ *     description = "Invalid, not found or expired JWT token"
+ * )
+ * @OA\Tag(name="Telephone")
  */
 class TelephoneController extends AbstractFOSRestController
 {
@@ -30,8 +40,12 @@ class TelephoneController extends AbstractFOSRestController
      * )
      * @OA\Response(
      *     response = 200,
-     *     description = "Returns the user according to his id",
+     *     description = "Returns the telephone according to his id",
      *     @Model(type=Telephone::class, groups={"read"})
+     * )
+     * @OA\Response(
+     *     response = 404,
+     *     description = "Telephone not found"
      * )
      *
      * @param Telephone|null $telephone
@@ -78,6 +92,11 @@ class TelephoneController extends AbstractFOSRestController
      * )
      * @Rest\View(
      *     serializerGroups = {"read"}
+     * )
+     * @OA\Response(
+     *     response = 200,
+     *     description = "Returns a list of telephones",
+     *     @Model(type=Telephone::class, groups={"read"})
      * )
      *
      * @param TelephoneRepository   $telephoneRepository

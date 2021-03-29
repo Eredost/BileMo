@@ -11,6 +11,8 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,6 +26,16 @@ use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * @Route("/api")
+ *
+ * @OA\Response(
+ *     response = 405,
+ *     description = "Method not allowed"
+ * )
+ * @OA\Response(
+ *     response = 401,
+ *     description = "Invalid, not found or expired JWT token"
+ * )
+ * @OA\Tag(name="User")
  */
 class UserController extends AbstractFOSRestController
 {
@@ -40,6 +52,16 @@ class UserController extends AbstractFOSRestController
      * @Security(
      *     "is_granted('MANAGE', consumer)",
      *     message = "You are not authorized to access this user"
+     * )
+     *
+     * @OA\Response(
+     *     response = 200,
+     *     description = "Returns the user according to his id",
+     *     @Model(type=User::class, groups={"read"})
+     * )
+     * @OA\Response(
+     *     response = 404,
+     *     description = "User not found"
      * )
      *
      * @param User|null $consumer
@@ -68,6 +90,19 @@ class UserController extends AbstractFOSRestController
      * @Security(
      *     "is_granted('ROLE_ADMIN') and is_granted('MANAGE', consumer)",
      *     message = "You are not authorized to delete this user"
+     * )
+     *
+     * @OA\Response(
+     *     response = 204,
+     *     description = "No content"
+     * )
+     * @OA\Response(
+     *     response = 404,
+     *     description = "User not found"
+     * )
+     * @OA\Response(
+     *     response = 403,
+     *     description = "Different common client or insufficient rights to delete a user"
      * )
      *
      * @param EntityManagerInterface $manager
@@ -114,6 +149,11 @@ class UserController extends AbstractFOSRestController
      * @Rest\View(
      *     serializerGroups = {"read"}
      * )
+     * @OA\Response(
+     *     response = 200,
+     *     description = "Returns a list of users according to the client id",
+     *     @Model(type=User::class, groups={"read"})
+     * )
      *
      * @param UserRepository        $userRepository
      * @param ParamFetcherInterface $paramFetcher
@@ -152,6 +192,52 @@ class UserController extends AbstractFOSRestController
      *         "validator" = {"groups" = "create"},
      *         "deserializationContext" = {"groups" = {"create"}}
      *     }
+     * )
+     * @OA\Response(
+     *     response = 201,
+     *     description = "Returns the user added",
+     *     @Model(type=User::class, groups={"read"})
+     * )
+     * @OA\Response(
+     *     response = 403,
+     *     description = "Insufficient rights to create a user"
+     * )
+     * @OA\Response(
+     *     response = 400,
+     *     description = "Malformed JSON or constraint validation errors"
+     * )
+     * @OA\RequestBody(
+     *     description = "User information",
+     *     @OA\MediaType(
+     *         mediaType = "application/json",
+     *         @OA\Schema(
+     *             @OA\Property(
+     *                 property = "email",
+     *                 description = "The user's email",
+     *                 type = "string"
+     *             ),
+     *             @OA\Property(
+     *                 property = "password",
+     *                 description = "The user's password",
+     *                 type = "string",
+     *                 format = "password"
+     *             ),
+     *             @OA\Property(
+     *                 property = "fullname",
+     *                 description = "The user's full name",
+     *                 type = "string"
+     *             ),
+     *             @OA\Property(
+     *                 property = "roles",
+     *                 description = "The user's roles",
+     *                 type = "array",
+     *                 @OA\Items(
+     *                     type = "string",
+     *                     title = "role"
+     *                 )
+     *             )
+     *         )
+     *     )
      * )
      *
      * @param User                             $user
