@@ -172,6 +172,7 @@ class User implements UserInterface
      *     message = "The user fullname cannot be blank"
      * )
      * @Assert\Length(
+     *     groups = {"create"},
      *     max = 80,
      *     maxMessage = "The fullname cannot exceed {{ limit }} characters"
      * )
