@@ -118,7 +118,14 @@ class User implements UserInterface
      *
      * @Serializer\Groups({"create", "read"})
      * @Serializer\Type("array")
-     * @OA\Property(description="The roles of the user giving permissions")
+     * @OA\Property(
+     *     type = "array",
+     *     description = "The roles of the user giving permissions",
+     *     @OA\Items(
+     *         type = "string",
+     *         title = "role"
+     *     )
+     * )
      */
     private array $roles = [];
 
